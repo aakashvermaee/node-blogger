@@ -73,4 +73,38 @@ exports.Posts = class Posts extends Service {
   async update(id, data, params) {
     return await this.patch(id, data, params);
   }
+
+  // todo: review & test
+  async remove(id, params) {
+    const query = {
+      filters: {
+        _id: id,
+      },
+      updateQuery: {
+        $set: {
+          isDeleted: true,
+        },
+      },
+    };
+
+    if (params.query.comments) {
+      query.filters['comments._id'] = data._id;
+      query.updateQuery.$set = {
+        'comments.$.isDeleted': true,
+      };
+    }
+
+    return await this.Model.findOneAndUpdate(
+      {
+        ...query.filters,
+      },
+      {
+        ...query.updateQuery,
+      },
+      {
+        new: true,
+        upsert: true,
+      }
+    );
+  }
 };
