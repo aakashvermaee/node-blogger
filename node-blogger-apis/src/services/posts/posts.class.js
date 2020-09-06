@@ -15,6 +15,10 @@ exports.Posts = class Posts extends Service {
     const posts = await super.find({
       ...params,
       paginate: isPaginate,
+      query: {
+        ...params.query,
+        $populate: ['author', 'comments.user'],
+      },
     });
 
     return posts;

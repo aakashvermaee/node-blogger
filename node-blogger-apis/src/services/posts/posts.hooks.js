@@ -43,6 +43,13 @@ async function canComment(hook) {
 
   if (_.includes(['get', 'find'], _.toLower(method))) return hook;
 
+  if (
+    (params.query.comments === undefined || params.query.comments === false) &&
+    _.toLower(method) === 'create'
+  ) {
+    return hook;
+  }
+
   const mongooseClient = app.get('mongooseClient');
   const postId = _.get(hook, 'data.postId', hook.id);
 

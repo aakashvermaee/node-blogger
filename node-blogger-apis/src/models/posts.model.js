@@ -2,13 +2,19 @@
 //
 // See http://mongoosejs.com/docs/models.html
 // for more of what you can do here.
+const _ = require('lodash');
+
 module.exports = function (app) {
   const modelName = 'posts';
   const mongooseClient = app.get('mongooseClient');
-  const { Schema } = mongooseClient;
+  const { Schema, models } = mongooseClient;
   const PostSchema = new Schema(
     {
-      author: { type: Schema.Types.ObjectId, required: true },
+      author: {
+        type: Schema.Types.ObjectId,
+        required: true,
+        ref: models.users,
+      },
       content: { type: String, required: true, trim: true },
       title: { type: String, required: true, trim: true },
       slug: { type: String, required: true, lowercase: true, trim: true },
@@ -31,13 +37,21 @@ module.exports = function (app) {
       },
       comments: [
         {
-          userId: { type: Schema.Types.ObjectId, required: true },
-          parent: { type: Schema.Types.ObjectId, required: true },
+          user: {
+            type: Schema.Types.ObjectId,
+            required: true,
+            ref: models.users,
+          },
+          parent: {
+            type: Schema.Types.ObjectId,
+            required: true,
+          },
           text: { type: String, trim: true, required: true },
           isDeleted: {
             type: Boolean,
             default: false,
           },
+          likes: { type: Number, default: 0 },
         },
       ],
       commentCount: {
@@ -66,7 +80,48 @@ module.exports = function (app) {
     }
   );
 
-  PostSchema.index({ slug: 1, author: 1 });
+  PostSchema.index(
+    { slug: 1, author: 1 },
+    {
+      unique: true,
+    }
+  );
+  PostSchema.index(
+    { title: 1, author: 1 },
+    {
+      unique: true,
+    }
+  );
+  PostSchema.index(
+    {
+      title: 1,
+    },
+    {
+      unique: true,
+    }
+  );
+  PostSchema.index(
+    {
+      slug: 1,
+    },
+    {
+      unique: true,
+      text: true,
+    }
+  );
+  PostSchema.index({
+    author: 1,
+  });
+
+  PostSchema.post('find', function (docs) {
+    _.forEach(docs, (doc) => {
+      delete doc.author.password;
+
+      _.forEach(doc.comments, (comment) => {
+        delete comment.user.password;
+      });
+    });
+  });
 
   // This is necessary to avoid model compilation errors in watch mode
   // see https://mongoosejs.com/docs/api/connection.html#connection_Connection-deleteModel

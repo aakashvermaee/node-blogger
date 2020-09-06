@@ -3,8 +3,8 @@
 // See http://mongoosejs.com/docs/models.html
 // for more of what you can do here.
 module.exports = function (app) {
-  const modelName = "users";
-  const mongooseClient = app.get("mongooseClient");
+  const modelName = 'users';
+  const mongooseClient = app.get('mongooseClient');
   const schema = new mongooseClient.Schema(
     {
       email: { type: String, unique: true, lowercase: true },
@@ -12,6 +12,18 @@ module.exports = function (app) {
       auth0Id: { type: String },
       googleId: { type: String },
       facebookId: { type: String },
+      firstName: {
+        type: String,
+        required: true,
+        lowercase: true,
+        trim: true,
+      },
+      lastName: {
+        type: String,
+        required: true,
+        lowercase: true,
+        trim: true,
+      },
     },
     {
       timestamps: true,
