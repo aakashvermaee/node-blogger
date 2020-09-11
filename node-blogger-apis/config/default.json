@@ -43,6 +43,6 @@
     }
   },
   "mongodb": "mongodb://localhost:27017/node_blogger",
-  "postgres": "postgres://postgres:@localhost:5432/node_blogger",
+  "postgres": "postgres://aakash:1611@localhost:5432/localDb",
   "x-api-key": "1EEA6DC-JAM4DP2-PHVYPBN-V0XCJ9X"
 }

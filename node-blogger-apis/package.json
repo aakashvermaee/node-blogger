@@ -26,7 +26,10 @@
   "scripts": {
     "test": "npm run lint && npm run mocha",
     "lint": "eslint src/. test/. --config .eslintrc.json --fix",
+    "migrations":"sequelize db:migrate",
+    "predev":"npm run migrations",
     "dev": "nodemon src/",
+    "prestart":"npm run migrations",
     "start": "node src/",
     "mocha": "mocha test/ --recursive --exit"
   },
@@ -50,6 +53,7 @@
     "compression": "^1.7.4",
     "cors": "^2.8.5",
     "feathers-mongoose": "^8.3.1",
+    "feathers-sequelize": "^6.2.0",
     "helmet": "^3.23.3",
     "lodash": "^4.17.20",
     "mongodb-core": "^3.2.7",
@@ -57,12 +61,14 @@
     "pg": "^8.3.3",
     "sequelize": "^6.3.5",
     "serve-favicon": "^2.5.0",
+    "uuid": "^8.3.0",
     "winston": "^3.3.3"
   },
   "devDependencies": {
     "eslint": "^7.8.1",
     "mocha": "^8.1.3",
     "nodemon": "^2.0.4",
-    "prettier": "^2.1.1"
+    "prettier": "^2.1.1",
+    "sequelize-cli": "^6.2.0"
   }
 }
